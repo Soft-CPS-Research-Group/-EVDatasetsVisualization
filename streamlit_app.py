@@ -5,8 +5,7 @@ import os
 
 from Data import (PecanStreetviz, Residential_electric_vehicle_charging_datasets_from_apartment_buildings, dataset2,
                   Energy_consumption_and_renewable_generation_data_of_5_aggregators, dataset4, Boulder, dataset6,
-                  dataset7, ElaadNL, PaloAlto, ACN_Data, ICharging)
-
+                  dataset7, ElaadNL, PaloAlto, ACN_Data, ICharging, InitialPage)
 
 st.title("EVs' Datasets Exploratory Data Analysis 🚗🔋⚡🔌")
 
@@ -27,7 +26,7 @@ selected_dataset = st.selectbox(
     directories, index=0)
 
 if selected_dataset == "Initial Page":
-    Residential_electric_vehicle_charging_datasets_from_apartment_buildings.page()
+    InitialPage.page()
 elif selected_dataset == "Residential electric vehicle charging datasets from apartment buildings":
     Residential_electric_vehicle_charging_datasets_from_apartment_buildings.page()
 elif selected_dataset == "Georgia Tech EV Campus Electric Vehicle Charging Stations Behavior":
@@ -54,4 +53,8 @@ elif selected_dataset == "ICharging":
     ICharging.page()
 else:
     st.error("The dataset you selected could not be found on our database")
+
+
+
+
 
