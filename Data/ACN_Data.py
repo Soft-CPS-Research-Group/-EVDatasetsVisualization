@@ -1,12 +1,12 @@
 import streamlit as st
-import pandas as pd
-import matplotlib.pyplot as plt
-import plotly.express as px
 import json
-# Import the necessary plotly components
-import plotly.graph_objs as go
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 def page():
+    #st.set_option('deprecation.showPyplotGlobalUse', False)
     st.write("You have selected the ACN-Data dataset")
     link = "https://ev.caltech.edu/dataset"
     text = "Click here to go to dataset website"
@@ -17,62 +17,90 @@ def page():
     with open("./Data/ACN-Data/" + site + ".json") as f:
         data = json.load(f)
 
-    df = pd.json_normalize(data["_items"])
+    # Convert dataset to a DataFrame
+    df = pd.DataFrame(data['_items'])
 
-    # Display the raw data in a table
-    st.write(df)
+    # Preprocess the data
+    df['connectionTime'] = pd.to_datetime(df['connectionTime'])
+    df['disconnectTime'] = pd.to_datetime(df['disconnectTime'])
+    df['arrival_time'] = df['connectionTime'].dt.hour * 60 + df['connectionTime'].dt.minute
+    df['departure_time'] = df['disconnectTime'].dt.hour * 60 + df['disconnectTime'].dt.minute
+    df['charging_duration'] = (df['disconnectTime'] - df['connectionTime']).dt.total_seconds() / 3600
+    df['weekday'] = df['connectionTime'].dt.weekday < 5
 
-    # Display a histogram of kWhDelivered
-    fig_kwh = px.histogram(df, x="kWhDelivered", nbins=20, title="kWh Delivered Distribution")
-    st.plotly_chart(fig_kwh)
+    # Set the style
+    sns.set(style="whitegrid")
 
-    # Display a bar chart of the number of charging sessions per spaceID
-    space_counts = df["spaceID"].value_counts().reset_index()
-    space_counts.columns = ["spaceID", "count"]
-    fig_space = px.bar(space_counts, x="spaceID", y="count", title="Number of Charging Sessions per SpaceID")
-    st.plotly_chart(fig_space)
+    # Plot 1: Charging hours histogram
+    st.title('Electric Vehicle Charging Data Visualization')
+    st.subheader('1. Charging Hours Histogram')
 
-    # Display a line chart of the connection and disconnect times
-    df["connectionTime"] = pd.to_datetime(df["connectionTime"])
-    df["disconnectTime"] = pd.to_datetime(df["disconnectTime"])
+    bin_edges = np.arange(0, df['charging_duration'].max() + 0.25, 0.25)
+    fig, ax = plt.subplots()
+    sns.histplot(data=df, x='charging_duration', bins=bin_edges, kde=False, ax=ax)
 
-    # Extract the time part of the connectionTime and disconnectTime as timedelta
-    df["connectionTime_td"] = df["connectionTime"].dt.time.apply(lambda t: pd.to_timedelta(t.strftime('%H:%M:%S')))
-    df["disconnectTime_td"] = df["disconnectTime"].dt.time.apply(lambda t: pd.to_timedelta(t.strftime('%H:%M:%S')))
+    ax.set_xlabel('Charging Time (hours)')
+    ax.set_ylabel('Number of Sessions')
+    plt.tight_layout()
+    st.pyplot(fig)
 
-    # Bin the connection and disconnection times in 15-minute intervals
-    bin_minutes = 15
-    df["connectionTime_binned"] = bin_timedelta_data(df["connectionTime_td"], bin_minutes)
-    df["disconnectTime_binned"] = bin_timedelta_data(df["disconnectTime_td"], bin_minutes)
+    # Plot 2: Charging hours histogram for weekdays and weekends
+    st.subheader('2. Charging Hours Histogram for Weekdays and Weekends')
 
-    # Group the data by the binned connectionTime and disconnectTime, count the number of sessions, and sort the data
-    grouped_conn_times = df.groupby("connectionTime_binned").size().reset_index(name="count").sort_values(
-        "connectionTime_binned")
-    grouped_disc_times = df.groupby("disconnectTime_binned").size().reset_index(name="count").sort_values(
-        "disconnectTime_binned")
+    g = sns.FacetGrid(df, col='weekday', hue='weekday', sharex=False, sharey=False)
+    g.map(sns.histplot, 'charging_duration', bins=bin_edges, kde=False)
+    g.set_axis_labels('Charging Time (hours)', 'Number of Sessions')
+    plt.tight_layout()
+    st.pyplot(g.fig)
 
-    # Convert the interval data to strings
-    grouped_conn_times["connectionTime_binned"] = grouped_conn_times["connectionTime_binned"].apply(
-        lambda x: f'{x.left} - {x.right}')
-    grouped_disc_times["disconnectTime_binned"] = grouped_disc_times["disconnectTime_binned"].apply(
-        lambda x: f'{x.left} - {x.right}')
+    # Plot 3: Arrival and departure times line graph
+    st.subheader('3. Arrival and Departure Times Line Graph')
 
-    # Create a line chart with separate lines for connection times and disconnection times
-    fig_times = go.Figure()
-    fig_times.add_trace(
-        go.Scatter(x=grouped_conn_times["connectionTime_binned"], y=grouped_conn_times["count"], mode='lines',
-                   name='Connection Times'))
-    fig_times.add_trace(
-        go.Scatter(x=grouped_disc_times["disconnectTime_binned"], y=grouped_disc_times["count"], mode='lines',
-                   name='Disconnection Times'))
-    fig_times.update_layout(
-        title=f'Number of Sessions by Connection and Disconnection Times (Binned in {bin_minutes}-minute intervals)',
-        xaxis_title='Time', yaxis_title='Count')
-    st.plotly_chart(fig_times)
+    bin_edges_arr_dep = np.arange(0, 24 * 60 + 15, 15)
+    arrival_counts, _ = np.histogram(df['arrival_time'], bins=bin_edges_arr_dep)
+    departure_counts, _ = np.histogram(df['departure_time'], bins=bin_edges_arr_dep)
+    bin_centers = (bin_edges_arr_dep[:-1] + bin_edges_arr_dep[1:]) / 2
+
+    fig, ax = plt.subplots()
+    ax.plot(bin_centers, arrival_counts, label='Arrival Time', color='blue')
+    ax.plot(bin_centers, departure_counts, label='Departure Time', color='red')
+
+    ax.set_xlabel('Time (hours)')
+    ax.set_xticks(np.arange(0, 24 * 60 + 60, 60))
+    ax.set_xticklabels(np.arange(0, 25))
+    ax.set_ylabel('Number of Sessions')
+    ax.legend()
+    plt.tight_layout()
+    st.pyplot(fig)
+
+    # Plot 4: Charging time vs energy charged
+    st.subheader('4. Charging Time vs Energy Charged')
+
+    bin_edges_charging = np.arange(0, df['charging_duration'].max() + 0.25, 0.25)
+    fig, ax = plt.subplots()
+    sns.scatterplot(data=df, x='charging_duration', y='kWhDelivered', ax=ax)
+
+    ax.set_xlabel('Charging Time (hours)')
+    ax.set_ylabel('Energy Charged (kWh)')
+    plt.tight_layout()
+    st.pyplot(fig)
+
+    # Calculate mean connect not charging time
+    df['doneChargingTime'] = pd.to_datetime(df['doneChargingTime'])
+    connect_not_charging_duration = (df['disconnectTime'] - df['doneChargingTime']).dropna().dt.total_seconds() / 3600
+    mean_connect_not_charging_duration = connect_not_charging_duration.mean()
+    st.caption(f'Mean connect not charging time: {mean_connect_not_charging_duration:.2f} hours')
+
+    # Plot 5: Energy charged vs number of sessions
+    st.subheader('5. Energy Charged vs Number of Sessions')
+
+    fig, ax = plt.subplots()
+    sns.histplot(data=df, x='kWhDelivered', kde=False, ax=ax)
+
+    ax.set_xlabel('Energy Charged (kWh)')
+    ax.set_ylabel('Number of Sessions')
+    plt.tight_layout()
+    st.pyplot(fig)
 
 
-# Define a function to bin timedelta data
-def bin_timedelta_data(data, bin_minutes):
-    bins = pd.timedelta_range(start='0 days', end='1 days', freq=f'{bin_minutes}T')
-    binned_data = pd.cut(data, bins, right=False)
-    return binned_data
+

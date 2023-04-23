@@ -68,6 +68,6 @@ def page():
         fig = go.Figure()
         fig.add_trace(go.Scatter(x=cars.index, y=cars['car1'], name='Car 1'))
         fig.add_trace(go.Scatter(x=cars.index, y=cars['car2'], name='Car 2'))
-        fig.update_layout(title='Cars for building {}'.format(selected_building),
+        fig.update_layout(title='Power consumption regarding EVs for building {}'.format(selected_building),
                           xaxis_title='Time', yaxis_title='Power (kW)')
         st.plotly_chart(fig, use_container_width=True)

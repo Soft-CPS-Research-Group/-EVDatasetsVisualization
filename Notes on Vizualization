@@ -1,0 +1,10 @@
+Everytime it is possible the following graphs are done for each dataset:
+
+1 - An histogram with the total amount of charging hours per session. The X should be the charging hours binned in 15 minute bins, forget the days. And the y should be the total number of charging sessions taking x time
+2 - Same as before but instead it is global for all the data I want to see on line for the weekdays and another line at x for weekends
+3 - In X I want the arriving time binned into 15 minute bins and in y i want the number of sessions where the persons arrived at that time. The same graph slhoud have another line where instead of arriving times binned into 15 minute bins it shoud be the departing time binned into 15 minute bins. All values in X should be global and disregard the days
+4 - Same as before but one graph for the weekdays and anotehr for the weekends
+5 - Plot the charging time in x and the amount of energy charged in that session in Y, The X should be binned into 15 minute bins
+6 - an histogram for the charging time in x and in y the number of events
+
+Besides that i want the metrics of mean charging time
