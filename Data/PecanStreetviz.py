@@ -9,6 +9,8 @@ def page():
     text = "Click here to go to dataset website"
     st.markdown(f"[{text}]({link})", unsafe_allow_html=True)
 
+    st.write("Due to the size of the files this vizualization might not work. Please go to the official dataset website and download the files corresponding to the data you want to vizualize in 15 and 1 minute granularity. Then download this code from its official repo and use the files")
+
     location = st.selectbox("Select Granularity", ("newyork", "california", "austin"))
 
     if location == "california":
