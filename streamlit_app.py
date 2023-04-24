@@ -8,7 +8,7 @@ st.set_page_config(
 )
 
 
-from Data import (PecanStreetviz, Residential_electric_vehicle_charging_datasets_from_apartment_buildings, dataset2,
+from Data import (PecanStreetviz, Residential_electric_vehicle_charging_datasets_from_apartment_buildings, GeorgiaTechEV,
                   Energy_consumption_and_renewable_generation_data_of_5_aggregators, dataset4, Boulder, Dundee,
                   EletricChargepoint, ElaadNL, PaloAlto, ACN_Data, ICharging, InitialPage)
 
@@ -34,7 +34,7 @@ if selected_dataset == "Initial Page":
 elif selected_dataset == "Residential electric vehicle charging datasets from apartment buildings":
     Residential_electric_vehicle_charging_datasets_from_apartment_buildings.page()
 elif selected_dataset == "Georgia Tech EV Campus Electric Vehicle Charging Stations Behavior":
-    dataset2.page()
+    GeorgiaTechEV.page()
 elif selected_dataset == "Energy consumption and renewable generation data of 5 aggregators":
     Energy_consumption_and_renewable_generation_data_of_5_aggregators.page()
 elif selected_dataset == "Perth & Kinross Council's Electric Vehicle Charging Station Usage":
