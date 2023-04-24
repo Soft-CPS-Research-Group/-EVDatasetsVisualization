@@ -11,19 +11,19 @@ def page():
     st.markdown(f"[{text}]({link})", unsafe_allow_html=True)
 
     # Load dataset
-    data = pd.read_csv("./Data/City of Boulder Electric Vehicle Charging Station Energy Consumption/Electric_Vehicle_Charging_Station_Energy_Consumption.csv")
+    with st.spinner('Loading...'):
+        data = pd.read_csv("./Data/City of Boulder Electric Vehicle Charging Station Energy Consumption/Electric_Vehicle_Charging_Station_Energy_Consumption.csv")
 
     # Process data
     data['Start_Date___Time'] = pd.to_datetime(data['Start_Date___Time'])
     data['End_Date___Time'] = pd.to_datetime(data['End_Date___Time'])
     data['Charging_Time'] = pd.to_timedelta(data['Charging_Time__hh_mm_ss_'])
-    data['weekday'] = data['Start_Date___Time'].dt.weekday
+    data['weekday'] = data['Start_Date___Time'].dt.dayofweek
 
     # Create bins
     bins = pd.timedelta_range(start='0 minutes', end='24 hours', freq='15T')
 
     # Visualizations
-    st.title("EV Charging Station Data Visualization")
 
     st.subheader("1. Charging Hours Histogram")
     bin_edges = np.arange(0, data['Charging_Time'].dt.total_seconds().max() / 3600 + 0.25, 0.25)

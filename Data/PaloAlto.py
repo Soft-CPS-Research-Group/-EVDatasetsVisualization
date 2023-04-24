@@ -16,15 +16,19 @@ def page():
     # Convert charging time to timedelta
     data['Charging_Time'] = pd.to_timedelta(data['Charging Time (hh:mm:ss)'])
 
-    # Convert date columns to datetime objects
-    data['Start_Date'] = pd.to_datetime(data['Start Date'])
-    data['End_Date'] = pd.to_datetime(data['End Date'])
+    # Assuming you have read the dataset into a DataFrame called 'data'
+    data['Start_Date'] = pd.to_datetime(data['Start Date'], errors='coerce')
+    data['End_Date'] = pd.to_datetime(data['End Date'], errors='coerce')
+
+    # Drop rows with NaT values in 'Start Date' or 'End Date'
+    data.dropna(subset=['Start_Date', 'End_Date'], inplace=True)
 
     # Graph 1: Charging Hours Histogram
     st.title('Electric Vehicle Charging Data Visualization')
     st.subheader('1. Charging Hours Histogram')
 
     bin_edges = np.arange(0, data['Charging_Time'].dt.total_seconds().max() / 3600 + 0.25, 0.25)
+
     fig, ax = plt.subplots()
     sns.histplot(data=data, x=data['Charging_Time'].dt.total_seconds() / 3600, bins=bin_edges, kde=False, ax=ax)
 
@@ -33,20 +37,20 @@ def page():
     plt.tight_layout()
     st.pyplot(fig)
 
-    # Graph 2: Charging Sessions by Day of the Week
-    st.subheader('2. Charging Sessions by Day of the Week')
+    # Plot 2: Charging hours histogram for weekdays and weekends
+    data['weekday'] = data['Start_Date'].dt.dayofweek
+    st.subheader('2. Charging Hours Histogram for Weekdays and Weekends')
 
-    day_of_week = data['Start_Date'].dt.dayofweek
-    day_counts = day_of_week.value_counts().sort_index()
-    day_names = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+    data['Charging_Time_hours'] = data['Charging_Time'].dt.total_seconds() / 3600
 
-    fig, ax = plt.subplots()
-    sns.barplot(x=day_names, y=day_counts, ax=ax)
-
-    ax.set_xlabel('Day of the Week')
-    ax.set_ylabel('Number of Sessions')
+    g = sns.FacetGrid(data, col='weekday', hue='weekday', col_wrap=2, sharex=False, sharey=False)
+    g.map(sns.histplot, 'Charging_Time_hours', bins=bin_edges, kde=False)
+    g.set_axis_labels('Charging Time (hours)', 'Number of Sessions')
     plt.tight_layout()
-    st.pyplot(fig)
+    st.pyplot(g.fig)
+
+# Add the remaining graphs following the same structure as above
+
 
     # Graph 3: Arrival and Departure Times Line Graph
     st.subheader('3. Arrival and Departure Times Line Graph')
@@ -81,13 +85,13 @@ def page():
     plt.tight_layout()
     st.pyplot(fig)
 
-    # Graph 5: Energy Charged vs GHG Savings
-    st.subheader('5. Energy Charged vs GHG Savings')
+    # Plot 5: Energy Charged vs Session
+    st.subheader('5. Energy Charged vs Session')
 
     fig, ax = plt.subplots()
-    sns.scatterplot(data=data, x='Energy (kWh)', y='GHG Savings (kg)', ax=ax)
+    sns.scatterplot(data=data, x='Energy (kWh)', y=data.index, ax=ax)
 
     ax.set_xlabel('Energy Charged (kWh)')
-    ax.set_ylabel('GHG Savings (kg)')
+    ax.set_ylabel('Session')
     plt.tight_layout()
     st.pyplot(fig)

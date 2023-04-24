@@ -14,8 +14,9 @@ def page():
 
     site = st.selectbox("Select Site", ("caltech", "jpl", "office1"))
 
-    with open("./Data/ACN-Data/" + site + ".json") as f:
-        data = json.load(f)
+    with st.spinner('Loading...'):
+        with open("./Data/ACN-Data/" + site + ".json") as f:
+            data = json.load(f)
 
     # Convert dataset to a DataFrame
     df = pd.DataFrame(data['_items'])
@@ -26,7 +27,7 @@ def page():
     df['arrival_time'] = df['connectionTime'].dt.hour * 60 + df['connectionTime'].dt.minute
     df['departure_time'] = df['disconnectTime'].dt.hour * 60 + df['disconnectTime'].dt.minute
     df['charging_duration'] = (df['disconnectTime'] - df['connectionTime']).dt.total_seconds() / 3600
-    df['weekday'] = df['connectionTime'].dt.weekday < 5
+    df['weekday'] = df['connectionTime'].dt.dayofweek
 
     # Set the style
     sns.set(style="whitegrid")

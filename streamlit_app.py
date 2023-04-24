@@ -1,19 +1,23 @@
 import streamlit as st
-import pandas as pd
-import numpy as np
-import os
+
+st.set_page_config(
+    page_title="EV EDA",
+    page_icon="🚗",
+    initial_sidebar_state="auto",
+    menu_items=None,
+)
+
 
 from Data import (PecanStreetviz, Residential_electric_vehicle_charging_datasets_from_apartment_buildings, dataset2,
-                  Energy_consumption_and_renewable_generation_data_of_5_aggregators, dataset4, Boulder, dataset6,
-                  dataset7, ElaadNL, PaloAlto, ACN_Data, ICharging, InitialPage)
+                  Energy_consumption_and_renewable_generation_data_of_5_aggregators, dataset4, Boulder, Dundee,
+                  EletricChargepoint, ElaadNL, PaloAlto, ACN_Data, ICharging, InitialPage)
+
 
 st.title("EVs' Datasets Exploratory Data Analysis 🚗🔋⚡🔌")
 
+
 # specify the path of the directory
 directory_path = './Data'
-
-# get a list of all files and directories in the directory
-dir_contents = os.listdir(directory_path)
 
 # filter out only the directories
 directories = ['Initial Page', 'ACN-Data', 'City of Boulder Electric Vehicle Charging Station Energy Consumption', 'City of Palo Alto - Electric Vehicle Charging Station Usage',
@@ -38,9 +42,9 @@ elif selected_dataset == "Perth & Kinross Council's Electric Vehicle Charging St
 elif selected_dataset == "City of Boulder Electric Vehicle Charging Station Energy Consumption":
     Boulder.page()
 elif selected_dataset == "Electric Vehicle Charging Sessions Dundee":
-    dataset6.page()
+    Dundee.page()
 elif selected_dataset == "Electric Chargepoint Analysis 2017 Domestics":
-    dataset7.page()
+    EletricChargepoint.page()
 elif selected_dataset == "ElaadNL Open Datasets for Electric Mobility Research":
     ElaadNL.page()
 elif selected_dataset == "City of Palo Alto - Electric Vehicle Charging Station Usage":
