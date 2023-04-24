@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
+
 def page():
     st.write("You have selected the Energy consumption and renewable generation data of 5 aggregators dataset")
     link = "https://zenodo.org/record/4399670#.ZEJ07fzMK3A"
@@ -9,7 +10,8 @@ def page():
     st.markdown(f"[{text}]({link})", unsafe_allow_html=True)
 
     # read the CSV file
-    df = pd.read_csv('./Data/Energy consumption and renewable generation data of 5 aggregators/15min-Data_V7.csv', sep=';', decimal=",")
+    df = pd.read_csv('./Data/Energy consumption and renewable generation data of 5 aggregators/15min-Data_V7.csv',
+                     sep=';', decimal=",")
 
     # Apply the fix_hour_format function to the DataFrame
     df = df.apply(fix_hour_format, axis=1)
@@ -22,11 +24,11 @@ def page():
 
     # Create interactive line chart with Plotly
     fig = px.line(df, x="DateTime", y=["Slow1", "Slow2", "Fast1", "Fast2"],
-                  labels={"value": "Values", "variable": "Lines"}, title="Interactive Line Graph for Slow and Fast")
+                  labels={"value": "MW", "variable": "Lines"},
+                  title="Interactive Line Graph for Slow and Fast Aggregators of EVs")
 
     # Show the interactive line chart in Streamlit
     st.plotly_chart(fig)
-
 
 
 # Function to fix 24:00 hour format
