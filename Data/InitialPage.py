@@ -22,7 +22,7 @@ def page():
 
     #with st.expander("Learn More abou the dashboard:"):
 
-    st.write("The following graphs and metrics are may be available for each dataset:")
+    st.write("The following graphs and metrics may be available for each dataset:")
 
     st.write(
         "- A histogram that shows the total number of charging hours per session.")
