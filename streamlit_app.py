@@ -25,6 +25,8 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+
+
 st.markdown("<h1 class='centered'>EVs' Datasets Data Visualization</h1>", unsafe_allow_html=True)
 
 # Load your images (local file paths or URLs)
@@ -64,47 +66,28 @@ with center_column:
     #col2.image(image2_resized, use_column_width=True)
 
 
-# specify the path of the directory
-directory_path = './Data'
 
-# filter out only the directories
-directories = ['Initial Page', 'ACN-Data', 'City of Boulder Electric Vehicle Charging Station Energy Consumption', 'City of Palo Alto - Electric Vehicle Charging Station Usage',
-               'Electric Chargepoint Analysis 2017 Domestics', 'Electric Vehicle Charging Sessions Dundee', 'Energy consumption and renewable generation data of 5 aggregators',
-               'Georgia Tech EV Campus Electric Vehicle Charging Stations Behavior', 'ICharging', 'PecanStreet', "Perth & Kinross Council's Electric Vehicle Charging Station Usage",
-               'Residential electric vehicle charging datasets from apartment buildings', "ElaadNL Open Datasets for Electric Mobility Research"]
+datasets = [InitialPage.InitialPage(),
+            ACN_Data.ACN() , Boulder.Boulder(), Dundee.Dundee(), ElaadNL.ElaadNL(),
+            EletricChargepoint.EletricChargepoint(),
+            Energy_consumption_and_renewable_generation_data_of_5_aggregators.FiveAg(),
+            GeorgiaTechEV.GeorgiaTech(), ICharging.ICharging(),
+            PaloAlto.PaloAlto(), PecanStreetviz.Pecan(), PerthKinross.PerthKinross(),
+            Residential_electric_vehicle_charging_datasets_from_apartment_buildings.REVC()
+            ]
+
+
 
 selected_dataset = st.selectbox(
     'Please select the dataset that you would like to visualize',
-    directories, index=0)
+    datasets, index=0)
 
-if selected_dataset == "Initial Page":
-    InitialPage.page()
-elif selected_dataset == "Residential electric vehicle charging datasets from apartment buildings":
-    Residential_electric_vehicle_charging_datasets_from_apartment_buildings.page()
-elif selected_dataset == "Georgia Tech EV Campus Electric Vehicle Charging Stations Behavior":
-    GeorgiaTechEV.page()
-elif selected_dataset == "Energy consumption and renewable generation data of 5 aggregators":
-    Energy_consumption_and_renewable_generation_data_of_5_aggregators.page()
-elif selected_dataset == "Perth & Kinross Council's Electric Vehicle Charging Station Usage":
-    PerthKinross.page()
-elif selected_dataset == "City of Boulder Electric Vehicle Charging Station Energy Consumption":
-    Boulder.page()
-elif selected_dataset == "Electric Vehicle Charging Sessions Dundee":
-    Dundee.page()
-elif selected_dataset == "Electric Chargepoint Analysis 2017 Domestics":
-    EletricChargepoint.page()
-elif selected_dataset == "ElaadNL Open Datasets for Electric Mobility Research":
-    ElaadNL.page()
-elif selected_dataset == "City of Palo Alto - Electric Vehicle Charging Station Usage":
-    PaloAlto.page()
-elif selected_dataset == "ACN-Data":
-    ACN_Data.page()
-elif selected_dataset == "PecanStreet":
-    PecanStreetviz.page()
-elif selected_dataset == "ICharging":
-    ICharging.page()
-else:
-    st.error("The dataset you selected could not be found on our database")
+
+#try:
+selected_dataset.page()
+#except:
+ #   st.write()
+  #  st.error("The dataset you selected could not be found on our database")
 
 
 st.write("________________________________________________________________________________________")
