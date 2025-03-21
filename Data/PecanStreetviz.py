@@ -25,15 +25,19 @@ class Pecan:
         else:
             gran = st.selectbox("Select Granularity", ("15min", "1min"))
 
-            if gran == "15min":
-                # Read the data from a CSV file
-                df = pd.read_csv('./Data/PecanStreet/' + location + '/15minute_data_' + location + '/15minute_data.csv')
-                var = 'local_15min'
-            elif gran == "1min":
-                # Read the data from a CSV file
-                with st.spinner('Loading...'):
-                    df = pd.read_csv('./Data/PecanStreet/' + location + '/1minute_data_' + location + '/1minute_data.csv')
-                var = 'localminute'
+            try:
+                if gran == "15min":
+                    # Read the data from a CSV file
+                    df = pd.read_csv('./Data/PecanStreet/' + location + '/15minute_data_' + location + '/15minute_data.csv')
+                    var = 'local_15min'
+                elif gran == "1min":
+                    # Read the data from a CSV file
+                    with st.spinner('Loading...'):
+                        df = pd.read_csv('./Data/PecanStreet/' + location + '/1minute_data_' + location + '/1minute_data.csv')
+                    var = 'localminute'
+            except:
+                st.error("Pecan street data is currently unavailable 🫤")
+                return
 
             # dropping rows for column a and b
             df = df.dropna(subset=['car1', 'car2'], how='all')
