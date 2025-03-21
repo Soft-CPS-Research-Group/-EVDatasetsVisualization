@@ -12,7 +12,7 @@ st.set_page_config(
 
 from Data import (PecanStreetviz, Residential_electric_vehicle_charging_datasets_from_apartment_buildings, GeorgiaTechEV,
                   Energy_consumption_and_renewable_generation_data_of_5_aggregators, PerthKinross, Boulder, Dundee,
-                  EletricChargepoint, ElaadNL, PaloAlto, ACN_Data, ICharging, InitialPage)
+                  EletricChargepoint, ElaadNL, PaloAlto, ACN_Data, ICharging, InitialPage, IChargingEV)
 
 st.markdown("""
 <style>
@@ -71,9 +71,10 @@ datasets = [InitialPage.InitialPage(),
             ACN_Data.ACN() , Boulder.Boulder(), Dundee.Dundee(), ElaadNL.ElaadNL(),
             EletricChargepoint.EletricChargepoint(),
             Energy_consumption_and_renewable_generation_data_of_5_aggregators.FiveAg(),
-            GeorgiaTechEV.GeorgiaTech(), ICharging.ICharging(),
+            GeorgiaTechEV.GeorgiaTech(),
             PaloAlto.PaloAlto(), PecanStreetviz.Pecan(), PerthKinross.PerthKinross(),
-            Residential_electric_vehicle_charging_datasets_from_apartment_buildings.REVC()
+            Residential_electric_vehicle_charging_datasets_from_apartment_buildings.REVC(),
+            IChargingEV.ICEV()
             ]
 
 
