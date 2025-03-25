@@ -4,16 +4,16 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit as st
 
-class ICEV:
+class OBEV:
     def __str__(self):
-        return "I-Charging"
+        return "Office building"
     
     @staticmethod
     def page():
-        st.write("You have selected the I-Charging EV dataset")
+        st.write("You have selected the Office Building dataset")
 
         with st.spinner('Loading...'):
-            data = pd.read_csv("./Data/ICharging/icharging-treated-data.csv", delimiter=";")
+            data = pd.read_csv("./Data/OfficeBuilding/office-building.csv", delimiter=";")
         data['start.time'] = pd.to_datetime(data['start.time'], format="%d/%m/%Y %H:%M")
         data['end.time'] = pd.to_datetime(data['end.time'], format="%d/%m/%Y %H:%M")
         #################################################################

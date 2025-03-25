@@ -10,9 +10,9 @@ st.set_page_config(
 )
 
 
-from Data import (PecanStreetviz, Residential_electric_vehicle_charging_datasets_from_apartment_buildings, GeorgiaTechEV,
+from Data import (OBEV, PecanStreetviz, Residential_electric_vehicle_charging_datasets_from_apartment_buildings, GeorgiaTechEV,
                   Energy_consumption_and_renewable_generation_data_of_5_aggregators, PerthKinross, Boulder, Dundee,
-                  EletricChargepoint, ElaadNL, PaloAlto, ACN_Data, ICharging, InitialPage, IChargingEV)
+                  EletricChargepoint, ElaadNL, PaloAlto, ACN_Data, ICharging, InitialPage)
 
 st.markdown("""
 <style>
@@ -74,7 +74,7 @@ datasets = [InitialPage.InitialPage(),
             GeorgiaTechEV.GeorgiaTech(),
             PaloAlto.PaloAlto(), PecanStreetviz.Pecan(), PerthKinross.PerthKinross(),
             Residential_electric_vehicle_charging_datasets_from_apartment_buildings.REVC(),
-            IChargingEV.ICEV()
+            OBEV.OBEV()
             ]
 
 
