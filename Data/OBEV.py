@@ -11,6 +11,7 @@ class OBEV:
     @staticmethod
     def page():
         st.write("You have selected the Office Building dataset")
+        st.write("This dataset was obtained from 18 different chargers and describes the electric vehicle charging profiles of office workers")
 
         with st.spinner('Loading...'):
             data = pd.read_csv("./Data/OfficeBuilding/office-building.csv", delimiter=";")
