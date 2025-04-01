@@ -65,30 +65,27 @@ with center_column:
     #col1.image(image1_resized, use_column_width=True)
     #col2.image(image2_resized, use_column_width=True)
 
+datasets = {
+    "Initial Page": InitialPage.InitialPage(),
+    "ACN Data": ACN_Data.ACN(),
+    "Boulder Dataset": Boulder.Boulder(),
+    "Dundee Dataset": Dundee.Dundee(),
+    "ElaadNL Dataset": ElaadNL.ElaadNL(),
+    "Electric Chargepoint": EletricChargepoint.EletricChargepoint(),
+    "Five Aggregators": Energy_consumption_and_renewable_generation_data_of_5_aggregators.FiveAg(),
+    "Georgia Tech EV": GeorgiaTechEV.GeorgiaTech(),
+    "Palo Alto Dataset": PaloAlto.PaloAlto(),
+    "Pecan Street": PecanStreetviz.Pecan(),
+    "Perth Kinross": PerthKinross.PerthKinross(),
+    "Apartment Charging": Residential_electric_vehicle_charging_datasets_from_apartment_buildings.REVC(),
+    "Office building Dataset": OBEV.OBEV(),
+}
 
+selected_name = st.selectbox("Please select the dataset you would like to visualize", list(datasets.keys()))
 
-datasets = [InitialPage.InitialPage(),
-            ACN_Data.ACN() , Boulder.Boulder(), Dundee.Dundee(), ElaadNL.ElaadNL(),
-            EletricChargepoint.EletricChargepoint(),
-            Energy_consumption_and_renewable_generation_data_of_5_aggregators.FiveAg(),
-            GeorgiaTechEV.GeorgiaTech(),
-            PaloAlto.PaloAlto(), PecanStreetviz.Pecan(), PerthKinross.PerthKinross(),
-            Residential_electric_vehicle_charging_datasets_from_apartment_buildings.REVC(),
-            OBEV.OBEV()
-            ]
+selected_dataset = datasets[selected_name]
 
-
-
-selected_dataset = st.selectbox(
-    'Please select the dataset that you would like to visualize',
-    datasets, index=0)
-
-
-#try:
 selected_dataset.page()
-#except:
- #   st.write()
-  #  st.error("The dataset you selected could not be found on our database")
 
 
 st.write("________________________________________________________________________________________")
