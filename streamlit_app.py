@@ -12,7 +12,7 @@ st.set_page_config(
 
 from Data import (OBEV, PecanStreetviz, Residential_electric_vehicle_charging_datasets_from_apartment_buildings, GeorgiaTechEV,
                   Energy_consumption_and_renewable_generation_data_of_5_aggregators, PerthKinross, Boulder, Dundee,
-                  EletricChargepoint, ElaadNL, PaloAlto, ACN_Data, ICharging, InitialPage)
+                  EletricChargepoint, ElaadNL, PaloAlto, ACN_Data, ICharging, InitialPage, DOE)
 
 st.markdown("""
 <style>
@@ -79,6 +79,7 @@ datasets = {
     "Perth Kinross": PerthKinross.PerthKinross(),
     "Apartment Charging": Residential_electric_vehicle_charging_datasets_from_apartment_buildings.REVC(),
     "Office building Dataset": OBEV.OBEV(),
+    "DOE Dataset": DOE.DOE()
 }
 
 selected_name = st.selectbox("Please select the dataset you would like to visualize", list(datasets.keys()))

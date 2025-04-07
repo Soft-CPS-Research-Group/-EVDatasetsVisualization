@@ -1,29 +1,34 @@
+import streamlit as st
+import json
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 import seaborn as sns
-import streamlit as st
+import matplotlib.pyplot as plt
 
-class OBEV:
-    def __str__(self):
-        return "Office building"
-    
+class DOE:
     @staticmethod
     def page():
-        st.write("You have selected the Office Building dataset")
-        st.write("This dataset was obtained from 18 different chargers and describes the electric vehicle charging profiles of office workers")
+        st.write("You have selected the DOE dataset")
+        st.write("This dataset contains information from 3,395 high resolution electric vehicle charging sessions. The workplace locations include: research and innovation centers, manufacturing, testing facilities and office headquarters.")
+        link = "https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/NFPQLW"
+        text = "Click here to go to dataset website"
+        st.markdown(f"[{text}]({link})", unsafe_allow_html=True)
 
         with st.spinner('Loading...'):
-            data = pd.read_csv("./Data/OfficeBuilding/office-building.csv", delimiter=";")
-        data['start.time'] = pd.to_datetime(data['start.time'], format="%d/%m/%Y %H:%M")
-        data['end.time'] = pd.to_datetime(data['end.time'], format="%d/%m/%Y %H:%M")
+            data = pd.read_csv("./Data/DOE-Dataset/station_data_dataverse.csv", delimiter=",")
+
+        data['created'] = pd.to_datetime(data['created'].apply(lambda t: t.split(' ')[1]))
+        data['ended'] = pd.to_datetime(data['ended'].apply(lambda t: t.split(' ')[1]))
+
+        data['arrival_time'] = data['created'].dt.hour * 60 + data['created'].dt.minute
+        data['departure_time'] = data['ended'].dt.hour * 60 + data['ended'].dt.minute
         #################################################################
         st.subheader("1. Charging Hours Histogram")
 
 
-        bin_edges = np.arange(0, 100 + .25, .25)
+        bin_edges = np.arange(0, data['chargeTimeHrs'].max() + 0.25, 0.25)
         fig, ax = plt.subplots()
-        sns.histplot(data=data, x=data["duration"],bins=bin_edges, kde=False, ax=ax)
+        sns.histplot(data=data, x=data["chargeTimeHrs"],bins=bin_edges, kde=False, ax=ax)
         ax.set_xlabel("Charging Time (hours)")
         ax.set_ylabel("Number of Sessions")
         plt.tight_layout()
@@ -32,11 +37,8 @@ class OBEV:
         st.subheader("2. Charging start and end times")
 
         bin_edges_arr_dep = np.arange(0, 24 * 60 + 15, 15)
-        arrival_counts, _ = np.histogram(data['start.time'].dt.time.apply(lambda t: t.hour * 60 + t.minute),
-                                        bins=bin_edges_arr_dep)
-        
-        departure_counts, _ = np.histogram(data['end.time'].dt.time.apply(lambda t: t.hour * 60 + t.minute),
-                                        bins=bin_edges_arr_dep)
+        arrival_counts, _ = np.histogram(data['arrival_time'], bins=bin_edges_arr_dep)
+        departure_counts, _ = np.histogram(data['departure_time'], bins=bin_edges_arr_dep)
         bin_centers = (bin_edges_arr_dep[:-1] + bin_edges_arr_dep[1:]) / 2
 
         fig, ax = plt.subplots()
@@ -54,23 +56,24 @@ class OBEV:
         #################################################################
         st.subheader("3. Charging Time vs Energy Charged")
         fig, ax = plt.subplots()
-        sns.scatterplot(data=data, x=data['duration'], y='energy', ax=ax)
+        sns.scatterplot(data=data, x=data['chargeTimeHrs'], y='kwhTotal', ax=ax)
 
         ax.set_xlabel("Charging Time (hours)")
-        ax.set_xlim(0, 40)
+        ax.set_xlim(0, 15)
 
         ax.set_ylabel("Energy Charged (kWh)")
-        ax.set_ylim(0, 120)
+        #ax.set_ylim(0, 120)
 
         plt.tight_layout()
         st.pyplot(fig)
 
         #################################################################
         st.subheader("4. Energy Supplied Histogram")
-        bin_edges_energy = np.arange(0, 150 + 1, 1)
         fig, ax = plt.subplots()
-        sns.histplot(data=data, x='energy', bins=bin_edges_energy, kde=False, ax=ax)
+
+        sns.histplot(data=data, x='kwhTotal', kde=False, ax=ax)
         ax.set_xlabel("Energy Supplied (kWh)")
         ax.set_ylabel("Number of Events")
         plt.tight_layout()
         st.pyplot(fig)
+
