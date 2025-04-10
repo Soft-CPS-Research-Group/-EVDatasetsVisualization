@@ -58,7 +58,7 @@ class PaloAlto:
 
 
         # Graph 3: Arrival and Departure Times Line Graph
-        st.subheader('3. Arrival and Departure Times Line Graph')
+        st.subheader('3. Charging start and end times')
 
         bin_edges_arr_dep = np.arange(0, 24 * 60 + 15, 15)
         arrival_counts, _ = np.histogram(data['Start_Date'].dt.hour * 60 + data['Start_Date'].dt.minute,
@@ -68,8 +68,8 @@ class PaloAlto:
         bin_centers = (bin_edges_arr_dep[:-1] + bin_edges_arr_dep[1:]) / 2
 
         fig, ax = plt.subplots()
-        ax.plot(bin_centers, arrival_counts, label='Arrival Time', color='blue')
-        ax.plot(bin_centers, departure_counts, label='Departure Time', color='red')
+        ax.plot(bin_centers, arrival_counts, label='Charging Start', color='blue')
+        ax.plot(bin_centers, departure_counts, label='Charging End', color='red')
 
         ax.set_xlabel('Time (hours)')
         ax.set_xticks(np.arange(0, 24 * 60 + 60, 60))
