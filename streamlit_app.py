@@ -110,9 +110,10 @@ st.write("______________________________________________________________________
 left2_column, right2_column = st.columns([4, 2])
 with left2_column:
     st.write("Created by: Tiago Fonseca")
+    st.write("Co-Devloped by: Pedro Pires")
     st.write("Software for Cyber Physical Systems (SoftCPS) Research Group")
 with right2_column:
-    logo = InitialPage.show_logo("https://github.com/calofonseca/EVDatasetsVizualization", "./Data/Images/128-1280187_github-logo-png-github-transparent-png.png",
+    logo = InitialPage.show_logo("https://github.com/Soft-CPS-Research-Group/-EVDatasetsVisualization", "./Data/Images/128-1280187_github-logo-png-github-transparent-png.png",
         width=65, padding=[0, 6, 20, 25], margin=[0, 0, 30, 0]
     )
     st.markdown(logo, unsafe_allow_html=True)
